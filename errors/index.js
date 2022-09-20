@@ -41,7 +41,7 @@ module.exports = {
 
     IncompleteData: class IncompleteData extends Error {
         constructor(){
-            let msg = `Bad request`
+            let msg = `Incomplete Data`
             super(msg);
             this.name = "BadRequest";
             this.message = msg;

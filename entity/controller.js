@@ -4,7 +4,7 @@ const updateApiAccess = require("./utils/updateApiAccess");
 const apiRouter = require("./init");
 const {MongoClient} = require("mongodb");
 let db = null;
-MongoClient.connect(process.env.MONGO_URL).then(c => {
+MongoClient.connect(process.env.MONGO_URL+"/"+process.env.DB_NAME).then(c => {
     db = c.db(process.env.DB_NAME).collection("entities");
 })
 

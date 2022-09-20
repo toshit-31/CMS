@@ -4,6 +4,7 @@ const {exit} = process;
 const fs = require("fs");
 const path = require("path");
 const readline = require("readline");
+const crypto = require("crypto")
 const r = readline.createInterface({
     input: process.stdin
 })
@@ -83,7 +84,7 @@ switch(args[2]){
                         envvar.SECRET = fs.readFileSync(secretPath).toString();
                         break;
                     } else {
-                        console.log("invalid or non-existent file path");
+                        console.log("Invalid or non-existent file path");
                         exit(1);
                     }
                 }
@@ -106,26 +107,27 @@ switch(args[2]){
             str+=key+'='+envvar[key]+'\n';
         }
         process.on("SIGINT",  byPassInterruption)
-        // process.on("SIGSTOP", byPassInterruption)
-        // process.on("SIGKILL", byPassInterruption)
         let adminData = {
-            firstName: 'First Name',
-            lastName: 'Last Name',
-            password: 'password',
+            firstName: 'admin',
+            lastName: '',
+            password: crypto.createHash("sha256").update("password@admin").digest("hex"),
             createdBy: 'admin',
-            email: 'admin@cms.com',
+            email: 'admin@admin.com',
             roles: ['admin'],
             isAdmin: true,
         }
-        // r.question("First Name : ", bindDataFromQuestion.bind(adminData, "firstName"))
-        // r.question("Last Name : ", bindDataFromQuestion.bind(adminData, "lastName"))
-        // r.question("Password : ", bindDataFromQuestion.bind(adminData, "password"))
-        // r.question("Email : ", bindDataFromQuestion.bind(adminData, "email"))
-        // r.close();
+        let adminRole = {
+            name: "admin",
+            isAdmin: true,
+            scopes: []
+        }
         // configure the initial data in database
         MongoClient.connect(envvar.MONGO_URL).then(async (client) => {
             let db = client.db(envvar.DB_NAME);
+            await db.collection("roles").insertOne(adminRole);
             await db.collection("users").insertOne(adminData);
+            
+            console.log("Created a user with email id 'admin@admin.com' and password 'password@admin' as 'admin'");
         }).then(function(){
             // write to env file
             fs.writeFileSync(path.join(__filename, "..", "..", ".env"), str);

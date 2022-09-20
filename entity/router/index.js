@@ -125,7 +125,7 @@ module.exports = function(entity, delProj){
     r.get("/", api.get);
     r.post("/", api.create);
     r.get("/:id", api.getbyid);
-    r.put("/:id", api.updatebyid);
+    r.post("/:id", api.updatebyid);
     r.delete("/:id", api.deletebyid);
     return r;
 }

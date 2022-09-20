@@ -31,7 +31,7 @@ module.exports = function(session){
             let methodPerm = {post: 2, get: 1};
             let urlParams = originalUrl.split("/");
             let entity = urlParams[2];
-            if(urlParams[1] !== "content") {
+            if(urlParams[1] !== process.env.CONTENT_BASE) {
                 next();
                 return;
             }

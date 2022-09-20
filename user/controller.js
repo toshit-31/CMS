@@ -4,7 +4,7 @@ const { NoUser, sendError, IncompleteData, InvalidCredentials, OnlyAdminAccess }
 const schema = require("./schema");
 const jwt = require("jsonwebtoken");
 
-const connection = mongoose.createConnection(process.env.MONGO_URL);
+const connection = mongoose.createConnection(process.env.MONGO_URL+"/"+process.env.DB_NAME);
 let User = connection.model("Users", schema.Users);
 let Role = connection.model("Roles", schema.Roles);
 let RoleList = {};
@@ -61,7 +61,7 @@ module.exports = {
 
             if(!email || !password) throw new IncompleteData();
             let user = await User.findOne({email}).populate("roles", "-isAdmin -_id");
-            
+
             if(!user) throw new NoUser(email);
             let passwordHash = crypto.createHash("sha256").update(password).digest("hex");
             
@@ -125,6 +125,7 @@ module.exports = {
             })
 
             let r = await new Role({name, scopes: _scopes}).save();
+            await updateRoleList()
 
             if(r._id){
                 res.json({
