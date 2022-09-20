@@ -86,6 +86,16 @@ module.exports = {
             this.message = msg;
             this.code = 500;
         }
+    },
+
+    BadData : class BadData extends Error {
+        constructor(){
+            let msg = "Invalid data for operation";
+            super(msg);
+            this.name = "BadData";
+            this.message = msg;
+            this.code = 500;
+        }
     }
 
 }
