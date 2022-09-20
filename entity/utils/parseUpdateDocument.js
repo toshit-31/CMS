@@ -19,7 +19,7 @@ function parseUpdateDocument(updoc){
             if(updoc.arrays[arr_field].update) updoc.arrays[arr_field].update.forEach( v => {
                 if(!pdoc.value.$set) pdoc.value.$set = {};
                 let [match, value] = v.split(":");
-                if(!match || !value) throw new Error("bad data")
+                if(!match || !value) throw new errors.BadData()
                 let id = arr_field+"e";
                 pdoc.value.$set[arr_field+".$["+id+"]"] = value;
                 pdoc.arrayFilters.push({[id] : match});
