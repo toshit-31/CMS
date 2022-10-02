@@ -19,8 +19,7 @@ module.exports.Users = new mongoose.Schema({
     createdBy: {type: String},
     email: {type: String, required: true},
     phone: {type: String, required: false},
-    roles: {type: [String], required: true},
-    isAdmin: {type: Boolean, default: false}
+    roles: {type: [String], required: true}
 }, {versionKey: false})
 
 // roles

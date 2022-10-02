@@ -12,4 +12,7 @@
     - Admin can create and add roles and change the access for permission of content for different roles
 
 - ##### Features in-progress
-    - upgrading the schema specifications and routes
+    - password change end-point
+    - giving entity settings permission to different roles in addition to Admin
+    
+    

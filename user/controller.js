@@ -44,6 +44,9 @@ module.exports = {
             if(!(req.body.roles && req.body.roles.every( r => !!RoleList[r]))) {
                 throw new IncompleteData();
             }
+            if(req.body.isAdmin){
+                req.body.roles.push("admin");
+            }
             user = new User(req.body);
             user.password = crypto.createHash("sha256").update(user.password).digest("hex");
             await user.save();
