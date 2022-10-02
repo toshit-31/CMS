@@ -1,7 +1,9 @@
 ## CMS
 ###### `v0.9.2`
 ---
-- ##### Features implemented
+#### `Documentation` https://documenter.getpostman.com/view/11036913/2s83tGnqxe
+---
+- ### Features implemented
     - JWT Authentication
     - Adding entity with routes for different actions
        - routes : `get`, `getById`, `post`, `deleteById`
@@ -11,7 +13,7 @@
       - `on schema update old router is unmounted and new router with updated schema `
     - Admin can create and add roles and change the access for permission of content for different roles
 
-- ##### Features in-progress
+- ### Features in-progress
     - password change end-point
     - giving entity settings permission to different roles in addition to Admin
     
