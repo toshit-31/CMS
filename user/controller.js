@@ -178,7 +178,6 @@ module.exports = {
                     success: false
                 })
             }
-            res.json(roles)
         } catch(e){
             sendError(res, e);
         }
