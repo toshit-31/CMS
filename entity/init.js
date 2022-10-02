@@ -13,7 +13,7 @@ const updateApiAccess = require("./utils/updateApiAccess");
  * @returns {express.Router}
  */
 const dynamicLoad = async function(app, {name, schema, routeSetting, deletedFields}){
-    let conn = await mongoose.createConnection(process.env.MONGO_URL).asPromise();
+    let conn = await mongoose.createConnection(process.env.MONGO_URL+"/"+process.env.DB_NAME).asPromise();
     let entityModel = conn.model(name, buildSchema(schema));
     let router = buildRouter(entityModel, (deletedFields || {}));
     // update api access map to keep up with access permission to apis
@@ -28,7 +28,7 @@ module.exports.dynamicLoad = dynamicLoad;
 
 module.exports.init = async function(app){
     try {
-        let conn = await mongoose.createConnection(process.env.MONGO_URL).asPromise();
+        let conn = await mongoose.createConnection(process.env.MONGO_URL+"/"+process.env.DB_NAME).asPromise();
         let coll = conn.collection("entities");
         let eData = await coll.find().toArray();
         for(let i = 0; i < eData.length; i++){
