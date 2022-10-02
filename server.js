@@ -16,7 +16,7 @@ let configAddresses = {
     "[post]/entity/create": "public",
     "[get]/entity/detail": "public",
     "[put]/entity/schema": "public",
-    "[get]/get-routers": "public",
+    "[post]/entity/route-setting": "public",
     "[post]/admin/roles": "admin",
     "[get]/admin/roles": "admin",
     "[post]/admin/roles/scopes": "admin"

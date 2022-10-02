@@ -9,7 +9,7 @@ const dataTypes = {
             validator(v){
                 return Math.floor(v) == v;
             },
-            message: `Integer expected`
+            message: "integer expected"
         }
     },
     "int_array": {
@@ -19,11 +19,20 @@ const dataTypes = {
                 return v.contructor == [].contructor &&
                 v.every( e => Math.floor(e) == e);
             },
-            message: "Integer Array expected"
+            message: "integer array expected"
         }
     },
     "float": {type: Number},
-    "float_array": {type: Number},
+    "float_array": {
+        type: [Number],
+        validate: {
+            validator(v){
+                return v.contructor == [].contructor &&
+                v.every( e => !isNaN(e));
+            },
+            message: "float array expected"
+        }
+    },
     "array": {type: Array},
     "date": {type: Date},
     "boolean": {type: Boolean},
