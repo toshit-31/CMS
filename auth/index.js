@@ -28,7 +28,7 @@ module.exports = function(session){
 
             // check if the user has access to the requested api
             let {method, originalUrl} = req;
-            let methodPerm = {post: 2, get: 1};
+            let methodPerm = {post: 2, put: 2, delete:2, get: 1};
             let urlParams = originalUrl.split("/");
             let entity = urlParams[2];
             if(urlParams[1] !== process.env.CONTENT_BASE) {
