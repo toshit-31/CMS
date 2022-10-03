@@ -1,5 +1,5 @@
 ## CMS
-###### `v0.9.2`
+###### `v0.9`
 ---
 #### `Documentation` https://documenter.getpostman.com/view/11036913/2s83tGnqxe
 ---
@@ -14,7 +14,6 @@
     - Admin can create and add roles and change the access for permission of content for different roles
 
 - ### Features in-progress
-    - password change end-point
     - giving entity settings permission to different roles in addition to Admin
     
     
