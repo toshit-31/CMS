@@ -1,5 +1,5 @@
 const {sendError, IncompleteData} = require("../errors");
-const parseRouteSetting = require("./utils/routeSettingParser");
+const routeSettingParser = require("./utils/routeSettingParser");
 const updateApiAccess = require("./utils/updateApiAccess");
 const apiRouter = require("./init");
 const {MongoClient} = require("mongodb");
@@ -12,14 +12,15 @@ module.exports = {
     async createEntity(req, res){
         try {
             let {name, schema, routeSetting} = req.body;
+            let {get, create, update} = routeSetting;
             if(!name || !schema || !routeSetting) throw new IncompleteData();
-            let {parsedSetting, routeMap} = parseRouteSetting(name, routeSetting, true);
+            if(routeSetting.delete && get && create && update) throw new IncompleteData();
+            let rs = routeSettingParser(name, routeSetting);
             let r = await db.insertOne({
                 name,
                 eid: name.toLowerCase(),
                 schema,
-                routeSetting: routeSetting,
-                // parsedRouteSetting: parsedSetting
+                routeSetting: rs.raw
             });
             if(r.insertedId){
                 const router = apiRouter.dynamicLoad(req.app, req.body);
@@ -27,7 +28,7 @@ module.exports = {
                     success: true,
                     id: r.insertedId,
                     entityName: name,
-                    routes: routeMap
+                    routes: rs.raw
                 })
             } else res.sendStatus(500);
         } catch(e){
@@ -85,20 +86,19 @@ module.exports = {
     async updateRouteSetting(req, res){
         try {
             let {eid} = req.query;
-            let {routeSetting} = req.body
-            if(!eid || !routeSetting) throw new IncompleteData();
-            let {parsedSetting, routeMap} = parseRouteSetting(eid, routeSetting, true);
+            if(!eid || !req.body) throw new IncompleteData();
+            let {parsed, raw} = routeSettingParser(eid, req.body);
             let setterDoc = {$set: {}};
-            for(let k in routeMap){
-                setterDoc.$set["routeSetting."+k] = routeMap[k];
+            for(let k in raw){
+                setterDoc.$set["routeSetting."+k] = raw[k];
             }
-            let r = await db.updateOne({eid}, setterDoc);
-            if(r.modifiedCount){
-                updateApiAccess(req.app, eid, parsedSetting);
+            let r = Object.keys(setterDoc.$set).length ? await db.updateOne({eid}, setterDoc) : {acknowledged : 1};
+            if(r.acknowledged){
+                updateApiAccess(req.app, eid, raw);
                 res.json({
                     success: true,
                     data: {
-                        changed: routeMap
+                        changed: raw
                     }
                 })
             } else {

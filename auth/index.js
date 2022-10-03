@@ -14,20 +14,19 @@ module.exports = function(session){
             const token = req.headers.authorization;
             let user = session.checkSession(token);
             
+            // check if session exists
             if(!user) throw new errors.InvalidToken();
-            if(req.authRequired && req.isAdmin && !user.roles.includes("admin")) throw new errors.OnlyAdminAccess();
-
-            // check token
+            // check if admin access is required
+            if(req.adminRequired && !user.roles.includes("admin")) throw new errors.OnlyAdminAccess();
             req.user = user;
-            
-            // pass scope checking if role includes admin
-            if(user.roles.includes("admin")){
+            // if admin bypass all scope check
+            if(req.user.roles.includes("admin")){
                 next();
                 return;
             }
 
-            // check if the user has access to the requested api
-            let {method, originalUrl} = req;
+            // scope check
+            let {method, originalUrl, api} = req;
             let methodPerm = {post: 2, put: 2, delete:2, get: 1};
             let urlParams = originalUrl.split("/");
             let entity = urlParams[2];

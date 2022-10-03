@@ -9,17 +9,18 @@ app.use(express.json());
 const modifier = require("./auth/modifiers");
 app.use(modifier.middleware);
 let configAddresses = {
-    "[post]/admin/user/new": "admin",
-    "[post]/user/authorize": "public",
-    "[get]/user/me": "protected",
-    "[post]/admin/user/assign": "admin",
-    "[post]/entity/create": "public",
-    "[get]/entity/detail": "public",
-    "[put]/entity/schema": "public",
-    "[post]/entity/route-setting": "public",
-    "[post]/admin/roles": "admin",
-    "[get]/admin/roles": "admin",
-    "[post]/admin/roles/scopes": "admin"
+    "post,/admin/user/new/": "admin",
+    "post,/user/authorize/": "public",
+    "get,/user/me/": "protected",
+    "post,/admin/user/assign/": "admin",
+    "post,/entity/create/": "admin",
+    "get,/entity/detail/": "admin",
+    "put,/entity/schema/": "admin",
+    "post,/entity/route-setting/": "admin",
+    "post,/admin/roles/": "admin",
+    "get,/admin/roles/": "admin",
+    "post,/admin/roles/scopes/": "admin",
+    "get,/dev/route-map/": "public"
 }
 app.set("api-access-map", configAddresses);
 
@@ -35,6 +36,7 @@ let {userRouter, adminRouter} = require("./user/routes");
 app.use("/user", userRouter);
 app.use("/admin", adminRouter);
 app.use("/entity", require("./entity/routes"));
+app.use("/dev", require("./dev/routes"));
 
 // create a empty register
 app.set("route-index-register", {});
