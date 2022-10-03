@@ -1,6 +1,6 @@
 const crypto = require("crypto");
 const mongoose = require("mongoose");
-const { NoUser, sendError, IncompleteData, InvalidCredentials, OnlyAdminAccess } = require("../errors");
+const { NoUser, sendError, IncompleteData, InvalidCredentials, OnlyAdminAccess, PermissionDenied } = require("../errors");
 const schema = require("./schema");
 const jwt = require("jsonwebtoken");
 
@@ -34,6 +34,8 @@ const getScopes = function(roles){
     return scopes;
 }
 
+const hashPassword = (pass) => crypto.createHash("sha256").update(pass).digest("hex");
+
 module.exports = {
     async createUser(req, res){
         try {
@@ -48,7 +50,7 @@ module.exports = {
                 req.body.roles.push("admin");
             }
             user = new User(req.body);
-            user.password = crypto.createHash("sha256").update(user.password).digest("hex");
+            user.password = hashPassword(user.password)
             await user.save();
 
             res.sendStatus(200);
@@ -66,7 +68,7 @@ module.exports = {
             let user = await User.findOne({email}).populate("roles", "-isAdmin -_id");
 
             if(!user) throw new NoUser(email);
-            let passwordHash = crypto.createHash("sha256").update(password).digest("hex");
+            let passwordHash = hashPassword(password)
             
             if(passwordHash != user.password) throw new InvalidCredentials(email);
 
@@ -89,6 +91,25 @@ module.exports = {
             });
         } catch(e){
             sendError(res, e)
+        }
+    },
+
+    async changePassword(){
+        try {
+            let {user} = req;
+            let {oldPassword, newPassword} = req.body;
+            if(!oldPassword || !newPassword) throw new IncompleteData();
+            if(!user) throw new PermissionDenied();
+            user = await User.findOne({email: user.email});
+            if(hashPassword(oldPassword) == user.password){
+                user.password = hashPassword(newPassword);
+                await user.save();
+                res.json({
+                    success: true
+                })
+            } else throw new InvalidCredentials();
+        } catch(e){
+            sendError(res, e);
         }
     },
 
