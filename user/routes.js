@@ -13,5 +13,6 @@ adminRouter.post("/roles/scopes", handlers.updateScopes);
 // user router common to admin router
 userRouter.post("/authorize", handlers.getAccessToken);
 userRouter.get("/me", handlers.getDetails);
+userRouter.post("/password", handlers.changePassword);
 
 module.exports = {adminRouter, userRouter};
