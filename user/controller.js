@@ -103,8 +103,8 @@ module.exports = {
 
     async getRoles(req, res){
         try {
-            const {isAdmin} = req;
-            if(!isAdmin) throw new OnlyAdminAccess();
+            const {adminRequired} = req;
+            if(!adminRequired) throw new OnlyAdminAccess();
 
             let r = RoleList;
             res.json(r);
@@ -115,8 +115,8 @@ module.exports = {
 
     async createRoles(req, res){
         try {
-            const {isAdmin} = req;
-            if(!isAdmin) throw new OnlyAdminAccess();
+            const {adminRequired} = req;
+            if(!adminRequired) throw new OnlyAdminAccess();
 
             let {name, scopes} = req.body;
             if(!name || scopes.length == 0) throw new IncompleteData();
@@ -150,8 +150,8 @@ module.exports = {
 
     async editUserRoles(req, res){
         try {
-            const {isAdmin} = req;
-            if(!isAdmin) throw new OnlyAdminAccess();
+            const {adminRequired} = req;
+            if(!adminRequired) throw new OnlyAdminAccess();
 
             let {email, update} = req.body;
             if(!email || !update || update.length == 0) throw new IncompleteData()
@@ -188,8 +188,8 @@ module.exports = {
 
     async updateScopes(req, res){
         try {
-            const {isAdmin} = req;
-            if(!isAdmin) throw new OnlyAdminAccess();
+            const {adminRequired} = req;
+            if(!adminRequired) throw new OnlyAdminAccess();
 
             let {roleId, name, scopes} = req.body;
             if(!roleId || !name || scopes.length == 0) throw new IncompleteData();
